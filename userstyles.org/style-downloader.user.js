@@ -13,12 +13,12 @@
     "use strict";
 
     const downloadString = function downloadString(fileName, contentType, stringToDownload) {
-        var downloadAnchor = document.createElement("a");
-        downloadAnchor.href = `data:${contentType};base64,${btoa(stringToDownload)}`;
+        const downloadAnchor = document.createElement("a");
+        downloadAnchor.href = URL.createObjectURL(new Blob([stringToDownload], {type : contentType}));
         downloadAnchor.target = "_blank";
         downloadAnchor.download = fileName;
         downloadAnchor.click();
-    }
+    };
 
     const isInstallButton = function isInstallButton(element) {
         return element.closest("[data-stylish='install-style-button']") !== null;
@@ -29,7 +29,7 @@
     };
 
     const getStyleDetails = function getStyleDetails(styleId) {
-        return fetch(`https://userstyles.org/styles/chrome/${getCurrentStyleId()}.json`)
+        return fetch(`https://userstyles.org/styles/chrome/${styleId}.json`)
             .then(response => response.json());
     };
 
@@ -48,7 +48,7 @@
     document.addEventListener("click", event => {
         if (isInstallButton(event.target)) {
             const currentStyleId = getCurrentStyleId();
-            getStyleDetails()
+            getStyleDetails(currentStyleId)
                 .then(getStyleCode)
                 .then(styleCode => downloadString(`userstyles-style-${currentStyleId}.css`, "text/css", styleCode));
             event.preventDefault();
