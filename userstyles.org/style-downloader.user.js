@@ -13,7 +13,6 @@
     'use strict';
 
     const downloadString = function downloadString(fileName, stringToDownload) {
-        console.log(stringToDownload);
         var downloadAnchor = document.createElement('a');
         downloadAnchor.href = 'data:text/css;base64,' + btoa(stringToDownload);
         downloadAnchor.target = '_blank';
