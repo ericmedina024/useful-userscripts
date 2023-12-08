@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Userstyles.org downloader
-// @namespace    http://ericmedina024.com/
+// @namespace    https://ericmedina024.com/
 // @version      0.1
 // @description  d!
 // @author       Eric Medina (ericmedina024)
