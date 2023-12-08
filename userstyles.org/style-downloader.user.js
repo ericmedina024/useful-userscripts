@@ -1,22 +1,22 @@
 // ==UserScript==
 // @name         Userstyles.org downloader
-// @namespace    https://ericmedina024.com/
+// @namespace    http://ericmedina024.com/
 // @version      0.1
-// @description  Lets you download styles from userstyles.org without Styilsh. Clicking the install button will now download the CSS.
-// @author       Eric Medina (https://github.com/EricMedina024)
+// @description  d!
+// @author       Eric Medina (ericmedina024)
 // @match        https://userstyles.org/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=userstyles.org
 // @grant        none
 // ==/UserScript==
 
 (function() {
-    'use strict';
+    "use strict";
 
-    const downloadString = function downloadString(fileName, stringToDownload) {
-        var downloadAnchor = document.createElement('a');
-        downloadAnchor.href = 'data:text/css;base64,' + btoa(stringToDownload);
-        downloadAnchor.target = '_blank';
-        downloadAnchor.download = `${fileName}.txt`;
+    const downloadString = function downloadString(fileName, contentType, stringToDownload) {
+        var downloadAnchor = document.createElement("a");
+        downloadAnchor.href = `data:${contentType};base64,${btoa(stringToDownload)}`;
+        downloadAnchor.target = "_blank";
+        downloadAnchor.download = fileName;
         downloadAnchor.click();
     }
 
@@ -50,7 +50,7 @@
             const currentStyleId = getCurrentStyleId();
             getStyleDetails()
                 .then(getStyleCode)
-                .then(styleCode => downloadString(`userstyles-style-${currentStyleId}.css`, styleCode));
+                .then(styleCode => downloadString(`userstyles-style-${currentStyleId}.css`, "text/css", styleCode));
             event.preventDefault();
         }
     });
