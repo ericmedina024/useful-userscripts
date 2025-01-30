@@ -4,14 +4,13 @@
 // @match       https://duckduckgo.com/*
 // @require     https://cdn.jsdelivr.net/openlocationcode/latest/openlocationcode.min.js
 // @grant       none
-// @version     1.1
+// @version     1.2
+// @run-at      document-end
 // @author      Eric Medina
 // @description Adds OpenLocationCodes to the DuckDuckGo map address field
 // ==/UserScript==
 
 (async () => {
-
-  const nativeFetch = window.fetch;
 
   function morphPlacesResponse(responseBody) {
     if ("results" in responseBody) {
@@ -41,12 +40,31 @@
     }
   }
 
+  const nativeCreateElement = document.createElement.bind(document);
+  let originalAddLocal = undefined;
+  document.createElement = function modifiedCreateElement() {
+    if (originalAddLocal === undefined) {
+      originalAddLocal = window.DDG.duckbar.add_local;
+    }
+    if (window.DDG.duckbar.add_local === originalAddLocal) {
+      window.DDG.duckbar.add_local = function modified_add_local(responseBody) {
+        morphFeaturesResponse(responseBody);
+        morphPlacesResponse(responseBody);
+        return originalAddLocal(...arguments);
+      };
+    }
+    return nativeCreateElement(...arguments);
+  }
+
+
+  const nativeFetch = window.fetch.bind(window);
   window.fetch = async function() {
     const response = await nativeFetch(...arguments);
     const contentType = response.headers.get("Content-Type");
     if (contentType == null || !contentType.includes("application/javascript")) {
       return response;
     }
+
     let responseBody;
     try {
       responseBody = await response.json();
